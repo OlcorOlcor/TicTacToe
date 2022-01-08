@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+
 """Displays the menu in console"""
 def DrawMenu():
     print("#"*50)
@@ -26,11 +27,31 @@ def DrawMenu():
         print("#"+" "*48+"#")
     print("#"*50)
 
+"""Displays the start of game menu in console"""
+def DrawStartOfGameMenu():
+    print("#"*50)
+    print("#"+" "*48+"#")
+    print("#"+" "*7+"Which mode would you like to play?"+" "*7+"#")
+    print("#"+" "*48+"#")
+    print("#"+" "*11+"Press Q for 2 player game"+" "*12+"#")
+    print("#"+" "*48+"#")
+    print("#"+" "*10+"Press W for game against AI"+" "*11+"#")
+    print("#"+" "*48+"#")
+    print("#"*50)
+
+
 """Clears the console and calls DrawMenu function"""
 def ResetMenu():
     clear = lambda: os.system('cls')
     clear()
     DrawMenu()
+
+
+"""Clears the console and calls DrawStartOfGameMenu function"""
+def ResetStartOfGameMenu():
+    clear = lambda: os.system('cls')
+    clear()
+    DrawStartOfGameMenu()
 
 """Starts a game in various modes, displays controls or exits the program based on user input"""
 def MenuLoop():
@@ -48,7 +69,21 @@ def MenuLoop():
             sys.exit()
         else: #default option, resets the menu
             ResetMenu()
-        
+
+
+"""Starts either a game for 2 players or a game against the AI"""
+def StartOfGameLoop(Board):
+    """Board: Array of arrays representing the playing board"""
+    while True():
+        User_Input = input("Enter what you want to do: ")
+        if(User_Input == 'q' or User_Input == 'Q'): #starts a game for 2 player
+            print("Starting game for 2")
+        elif(User_Input == 'w' or User_Input == 'W'): #starts a game against AI
+            print("Starting game against AI")
+        else: #default option, resets the start of game menu
+            ResetStartOfGameMenu()
+
+
 """Creates and returns an array of arrays that represents the playing board"""
 def CreatePlayingBoard(size: int):
     """size: represents the size of the arrays SizexSize"""
@@ -59,6 +94,7 @@ def CreatePlayingBoard(size: int):
             Board[r].append('.') #each . represents a square
     return Board
 
+
 """Takes input from the user and checks whether or not its a valid move"""
 def PlayerInput(Board):
     """Board: Array of arrays that represents the playing board"""
@@ -68,8 +104,9 @@ def PlayerInput(Board):
             coordinates = [int(i) for i in inp.split()] #splits the input into coordinates
             if(coordinates[0] in range(1, len(Board) + 1) and coordinates[1] in range(1, len(Board) + 1)): #checks if the coordinates aren't out of bounds
                 if(Board[coordinates[0] - 1][coordinates[1] - 1] == '.'): #checks if the tile isn't already filled
-                    Board[coordinates[0] - 1][coordinates[1] - 1] = 'X' #fills the tile
+                    Board[coordinates[0] - 1][coordinates[1] - 1] = 'X' #fills the square
                     break
+
 
 
 DrawMenu()
