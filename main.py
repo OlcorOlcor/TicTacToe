@@ -27,6 +27,7 @@ def DrawMenu():
         print("#"+" "*48+"#")
     print("#"*50)
 
+
 """Displays the start of game menu in console"""
 def DrawStartOfGameMenu():
     print("#"*50)
@@ -36,6 +37,8 @@ def DrawStartOfGameMenu():
     print("#"+" "*11+"Press Q for 2 player game"+" "*12+"#")
     print("#"+" "*48+"#")
     print("#"+" "*10+"Press W for game against AI"+" "*11+"#")
+    print("#"+" "*48+"#")
+    print("#"+" "*11+"Press E to return to menu"+" "*12+"#")
     print("#"+" "*48+"#")
     print("#"*50)
 
@@ -53,35 +56,39 @@ def ResetStartOfGameMenu():
     clear()
     DrawStartOfGameMenu()
 
+
 """Starts a game in various modes, displays controls or exits the program based on user input"""
 def MenuLoop():
     while True:
+        ResetMenu()
         User_Input = input("Enter what you want to do: ")
         if(User_Input == 'q' or User_Input == 'Q'): #starts a 3x3 game
             Board = CreatePlayingBoard(3)
+            StartOfGameLoop(Board)
         elif(User_Input == 'w' or User_Input == 'W'): #starts a 5x5 game
             Board = CreatePlayingBoard(5)
+            StartOfGameLoop(Board)
         elif(User_Input == 'e' or User_Input == 'E'): #starts a 10x10 game
             Board = CreatePlayingBoard(10)
+            StartOfGameLoop(Board)
         elif(User_Input == 'r' or User_Input == 'R'): #displays the controls
             print("Showing off controls")
         elif(User_Input == 't' or User_Input == 'T'): #exits the program
             sys.exit()
-        else: #default option, resets the menu
-            ResetMenu()
 
 
 """Starts either a game for 2 players or a game against the AI"""
 def StartOfGameLoop(Board):
     """Board: Array of arrays representing the playing board"""
-    while True():
+    while True:
+        ResetStartOfGameMenu()
         User_Input = input("Enter what you want to do: ")
         if(User_Input == 'q' or User_Input == 'Q'): #starts a game for 2 player
             print("Starting game for 2")
         elif(User_Input == 'w' or User_Input == 'W'): #starts a game against AI
             print("Starting game against AI")
-        else: #default option, resets the start of game menu
-            ResetStartOfGameMenu()
+        elif(User_Input == 'e' or User_Input == 'E'): #returns to menu
+            return
 
 
 """Creates and returns an array of arrays that represents the playing board"""
@@ -109,5 +116,4 @@ def PlayerInput(Board):
 
 
 
-DrawMenu()
 MenuLoop()
