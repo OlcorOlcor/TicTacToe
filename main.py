@@ -1,7 +1,11 @@
 import sys
 import os
 import re
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
+"""Displays the menu in console"""
 def DrawMenu():
     print("#"*50)
     print("#"+" "*18+"TIC TAC TOE"+" "*19+"#")
@@ -22,48 +26,49 @@ def DrawMenu():
         print("#"+" "*48+"#")
     print("#"*50)
 
-
+"""Clears the console and calls DrawMenu function"""
 def ResetMenu():
     clear = lambda: os.system('cls')
     clear()
     DrawMenu()
 
-
+"""Starts a game in various modes, displays controls or exits the program based on user input"""
 def MenuLoop():
     while True:
         User_Input = input("Enter what you want to do: ")
-        if(User_Input == 'q' or User_Input == 'Q'):
+        if(User_Input == 'q' or User_Input == 'Q'): #starts a 3x3 game
             Board = CreatePlayingBoard(3)
-            PlayerInput(Board)
-        elif(User_Input == 'w' or User_Input == 'W'):
+        elif(User_Input == 'w' or User_Input == 'W'): #starts a 5x5 game
             Board = CreatePlayingBoard(5)
-        elif(User_Input == 'e' or User_Input == 'E'):
+        elif(User_Input == 'e' or User_Input == 'E'): #starts a 10x10 game
             Board = CreatePlayingBoard(10)
-        elif(User_Input == 'r' or User_Input == 'R'):
+        elif(User_Input == 'r' or User_Input == 'R'): #displays the controls
             print("Showing off controls")
-        elif(User_Input == 't' or User_Input == 'T'):
+        elif(User_Input == 't' or User_Input == 'T'): #exits the program
             sys.exit()
-        else:
+        else: #default option, resets the menu
             ResetMenu()
         
-
-def CreatePlayingBoard(size):
+"""Creates and returns an array of arrays that represents the playing board"""
+def CreatePlayingBoard(size: int):
+    """size: represents the size of the arrays SizexSize"""
     Board = []
     for r in range(size):
-        Board.append([])
+        Board.append([]) #each array represents a row
         for c in range(size):
-            Board[r].append('.')
+            Board[r].append('.') #each . represents a square
     return Board
 
-
+"""Takes input from the user and checks whether or not its a valid move"""
 def PlayerInput(Board):
+    """Board: Array of arrays that represents the playing board"""
     while True:
-        inp = input("Make a move [X Y]: ")
-        if(re.match("(\d|10) (\d|10)", inp)):
-            coordinates = [int(i) for i in inp.split()]
-            if(coordinates[0] in range(1, 4) and coordinates[1] in range(1, 4)):
-                if(Board[coordinates[0] - 1][coordinates[1] - 1] == '.'):
-                    Board[coordinates[0] - 1][coordinates[1] - 1] = 'X'
+        inp = input("Make a move [X Y]: ") #takes input from the user
+        if(re.match("(\d|10) (\d|10)", inp)): #checks if its in a correct format
+            coordinates = [int(i) for i in inp.split()] #splits the input into coordinates
+            if(coordinates[0] in range(1, len(Board) + 1) and coordinates[1] in range(1, len(Board) + 1)): #checks if the coordinates aren't out of bounds
+                if(Board[coordinates[0] - 1][coordinates[1] - 1] == '.'): #checks if the tile isn't already filled
+                    Board[coordinates[0] - 1][coordinates[1] - 1] = 'X' #fills the tile
                     break
 
 
