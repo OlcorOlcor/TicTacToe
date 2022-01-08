@@ -2,6 +2,7 @@ import sys
 import os
 import re
 
+
 """Displays the menu in console"""
 def DrawMenu():
     print("#"*50)
@@ -14,7 +15,7 @@ def DrawMenu():
     print("#"+" "*48+"#")
     print("#"+" "*14+"Press W for 5x5 game"+" "*14+"#")
     print("#"+" "*48+"#")
-    print("#"+" "*13+"Press E for 10x10 game"+" "*13+"#")
+    print("#"+" "*13+"Press E for 9x9 game"+" "*13+"#")
     print("#"+" "*48+"#")
     print("#"+" "*14+"Press R for Controls"+" "*14+"#")
     print("#"+" "*48+"#")
@@ -64,8 +65,8 @@ def MenuLoop():
         elif(User_Input == 'w' or User_Input == 'W'): #starts a 5x5 game
             Board = CreatePlayingBoard(5)
             StartOfGameLoop(Board)
-        elif(User_Input == 'e' or User_Input == 'E'): #starts a 10x10 game
-            Board = CreatePlayingBoard(10)
+        elif(User_Input == 'e' or User_Input == 'E'): #starts a 9x9 game
+            Board = CreatePlayingBoard(9)
             StartOfGameLoop(Board)
         elif(User_Input == 'r' or User_Input == 'R'): #displays the controls
             print("Showing off controls")
@@ -86,6 +87,7 @@ def StartOfGameLoop(Board):
         elif(User_Input == 'e' or User_Input == 'E'): #returns to menu
             return
 
+
 """Displays board in console"""
 def ResetBoard(Board):
     clear = lambda: os.system('cls')
@@ -104,7 +106,7 @@ def TwoPlayerGameLoop(Board):
             playing = False #switches the player
         else:
             Board = PlayerInput(Board, "O's turn [X Y]: ", 'O')
-            playing = True #switcher the player
+            playing = True #switches the player
 
 
 
@@ -112,10 +114,17 @@ def TwoPlayerGameLoop(Board):
 def CreatePlayingBoard(size: int):
     """size: represents the size of the arrays SizexSize"""
     Board = []
-    for r in range(size):
+    Board.append([])
+    Board[0].append('#') #adds '#' to the top left corner of the playing board
+    for c in range(1, size + 1): #adds the first row with column numbers
+        Board[0].append(str(c))
+    rowcount = 1
+    for r in range(1, size + 1):
         Board.append([]) #each array represents a row
+        Board[r].append(str(rowcount)) #adds row number at the start of row
         for c in range(size):
             Board[r].append('.') #each . represents a square
+        rowcount += 1 
     return Board
 
 
@@ -130,8 +139,8 @@ def PlayerInput(Board: list, Message: str, Symbol: str):
         if(re.match("(\d|10) (\d|10)", inp)): #checks if its in a correct format
             coordinates = [int(i) for i in inp.split()] #splits the input into coordinates
             if(coordinates[0] in range(1, len(Board) + 1) and coordinates[1] in range(1, len(Board) + 1)): #checks if the coordinates aren't out of bounds
-                if(Board[coordinates[0] - 1][coordinates[1] - 1] == '.'): #checks if the tile isn't already filled
-                    Board[coordinates[0] - 1][coordinates[1] - 1] = Symbol #fills the square
+                if(Board[coordinates[0]][coordinates[1]] == '.'): #checks if the tile isn't already filled
+                    Board[coordinates[0]][coordinates[1]] = Symbol #fills the square
                     return Board
         ResetBoard(Board)
 
