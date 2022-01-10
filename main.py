@@ -84,6 +84,7 @@ def StartOfGameLoop(Board, Win_Condition):
         User_Input = input("Enter what you want to do: ")
         if(User_Input == 'q' or User_Input == 'Q'): #starts a game for 2 player
             TwoPlayerGameLoop(Board, Win_Condition)
+            return
         elif(User_Input == 'w' or User_Input == 'W'): #starts a game against AI
             print("Starting game against AI")
         elif(User_Input == 'e' or User_Input == 'E'): #returns to menu
@@ -106,13 +107,13 @@ def TwoPlayerGameLoop(Board, Win_Condition):
     while True:
         ResetBoard(Board)
         if playing:
-            Board = PlayerInput(Board, "X's turn [X Y]: ", 'X', Win_Condition)
+            Board, End = PlayerInput(Board, "X's turn [X Y]: ", 'X', Win_Condition)
             playing = False #switches the player
         else:
-            Board = PlayerInput(Board, "O's turn [X Y]: ", 'O', Win_Condition)
+            Board, End = PlayerInput(Board, "O's turn [X Y]: ", 'O', Win_Condition)
             playing = True #switches the player
-
-
+        if End:
+            return
 
 """Creates and returns an array of arrays that represents the playing board"""
 def CreatePlayingBoard(size: int):
@@ -147,10 +148,13 @@ def PlayerInput(Board: list, Message: str, Symbol: str, Win_Condition: int):
                 if(Board[coordinates[0]][coordinates[1]] == '.'): #checks if the tile isn't already filled
                     Board[coordinates[0]][coordinates[1]] = Symbol #fills the square
                     if(CheckWinCondition(Board, coordinates, Symbol, Win_Condition)):
-                        print(Symbol + "won")
-                        input()
-                    return Board
+                        ResetBoard(Board)
+                        print(Symbol + " won")
+                        input("Press Enter to return to Menu")
+                        return Board, True
+                    return Board, False
         ResetBoard(Board)
+
 
 """Checks if board is in a winning state for one of the players"""
 def CheckWinCondition(Board: list, Coordinates: tuple, Symbol: str, Win_Condition: int):
@@ -164,10 +168,11 @@ def CheckWinCondition(Board: list, Coordinates: tuple, Symbol: str, Win_Conditio
         count = 0
         count += SearchInADirection(Board, directions[i], Symbol, Coordinates[:])
         count += SearchInADirection(Board, directions[i + 1], Symbol, Coordinates[:])
-        count -= 1 #+1 for itself
+        count -= 1 #1 is substracted because the symbol on starting coordinates is counted twice
         if(count >= Win_Condition):
             return True
     return False
+
 
 """Counts how many of the same symbol are in a straight line"""
 def SearchInADirection(Board: list, direction: tuple, Symbol: str, current_Coordinates: tuple):
@@ -177,14 +182,16 @@ def SearchInADirection(Board: list, direction: tuple, Symbol: str, current_Coord
     current_coordinates: starting coordinates"""
     count = 0
     current = Board[current_Coordinates[0]][current_Coordinates[1]] #Symbol to be checked
-    if current_Coordinates[0] + direction[0] >= len(Board) or current_Coordinates[1] + direction[1] >= len(Board):
+    if current_Coordinates[0] + direction[0] >= len(Board) or current_Coordinates[1] + direction[1] >= len(Board): #adds one to the counter in the case of the symbol being right on the edge
         count += 1
     while current == Symbol and current_Coordinates[0] + direction[0] < len(Board) and current_Coordinates[1] + direction[1] < len(Board):
         count += 1
-        current_Coordinates[0] += direction[0]
-        current_Coordinates[1] += direction[1]
-        current = Board[current_Coordinates[0]][current_Coordinates[1]]
+        current_Coordinates[0] += direction[0] 
+        current_Coordinates[1] += direction[1] 
+        current = Board[current_Coordinates[0]][current_Coordinates[1]] #changes current symbol to the next square
     return count
+
+
 MenuLoop()
 
 
