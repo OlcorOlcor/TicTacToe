@@ -1,8 +1,9 @@
+from tokenize import cookie_re
 from Menu import Menu
 import os
 import sys
 import re
-
+from AI import AI
 
 
 class Game():
@@ -41,7 +42,8 @@ class Game():
                 self.TwoPlayerGameLoop(Board, Win_Condition)
                 return
             elif(User_Input == 'w' or User_Input == 'W'): #starts a game against AI
-                print("Starting game against AI")
+                self.SinglePlayerGameLoop(Board, Win_Condition)
+                return
             elif(User_Input == 'e' or User_Input == 'E'): #returns to menu
                 return
 
@@ -62,10 +64,28 @@ class Game():
         while True:
             self.ResetBoard(Board)
             if playing:
-                Board, End = self.PlayerInput(Board, "X's turn [X Y]: ", 'X', Win_Condition)
+                End = self.PlayerInput(Board, "X's turn [X Y]: ", 'X', Win_Condition)
                 playing = False #switches the player
             else:
-                Board, End = self.PlayerInput(Board, "O's turn [X Y]: ", 'O', Win_Condition)
+                End = self.PlayerInput(Board, "O's turn [X Y]: ", 'O', Win_Condition)
+                playing = True #switches the player
+            if End:
+                return
+
+
+    """Function for taking input for two player game"""
+    def SinglePlayerGameLoop(self, Board, Win_Condition):
+        """Board: Array of arrays representing the playing board
+        Win_Condition: int representing how many symbols in a straight line it takes to win"""
+        ai = AI(Win_Condition)
+        playing = True #boolean representing which player is about to make a move (X/O)
+        while True:
+            self.ResetBoard(Board)
+            if playing:
+                End = self.PlayerInput(Board, "Player's turn [X Y]: ", 'X', Win_Condition)
+                playing = False #switches the player
+            else:
+                ai.CalculateMove(Board, 'O')
                 playing = True #switches the player
             if End:
                 return
@@ -106,8 +126,8 @@ class Game():
                             self.ResetBoard(Board)
                             print(Symbol + " won")
                             input("Press Enter to return to Menu")
-                            return Board, True
-                        return Board, False
+                            return True
+                        return False
             self.ResetBoard(Board)
 
 
@@ -118,8 +138,12 @@ class Game():
         Symbol: Represent players symbol (X/O)
         Win_Condition: int representing how many symbols in a straight line it takes to win
         """
-        directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1) ,(-1, 1), (1, -1)] #directions that will be checked for win condition (right, left, up, down, top-right, bottom-left, bottom-right, top-left)
+        
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)] #directions that will be checked for win condition (right, left, up, down, top-right, bottom-left, bottom-right, top-left)
+        
         for i in range(0, 7, 2 ): #4 cycles for every column, row and diagonal.
+            if(Coordinates == [1, 3] and i == 6):
+                print()
             count = 0
             count += self.SearchInADirection(Board, directions[i], Symbol, Coordinates[:])
             count += self.SearchInADirection(Board, directions[i + 1], Symbol, Coordinates[:])
@@ -139,9 +163,13 @@ class Game():
         current = Board[current_Coordinates[0]][current_Coordinates[1]] #Symbol to be checked
         if current_Coordinates[0] + direction[0] >= len(Board) or current_Coordinates[1] + direction[1] >= len(Board): #adds one to the counter in the case of the symbol being right on the edge
             count += 1
-        while current == Symbol and current_Coordinates[0] + direction[0] < len(Board) and current_Coordinates[1] + direction[1] < len(Board): #Loops as long as current position still has the right symbol and the position isn't out of bounds.
+            return count
+        while current == Symbol: #Loops as long as current position still has the right symbol and the position isn't out of bounds.
+            if(current_Coordinates[0] + direction[0] >= len(Board) or current_Coordinates[1] + direction[1] >= len(Board)):
+                count += 1
+                break
             count += 1
-            current_Coordinates[0] += direction[0] 
+            current_Coordinates[0] += direction[0]
             current_Coordinates[1] += direction[1] 
             current = Board[current_Coordinates[0]][current_Coordinates[1]] #changes current symbol to the next square
         return count

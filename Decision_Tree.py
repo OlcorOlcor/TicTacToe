@@ -1,6 +1,5 @@
 class Node:
-    def __init__(self, parent, x: int, y: int):
-        self.parent = parent
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
         self.children = []
