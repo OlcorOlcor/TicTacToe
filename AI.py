@@ -1,60 +1,54 @@
+from numpy import equal
 from Decision_Tree import Decision_Tree
 from Decision_Tree import Node
+
 
 class AI:
 
 
     def __init__(self, Win_Condition):
         self.Win_Condition = Win_Condition
-        self.NumberOfMoves = 1 #start at 1 because the player always goes first
 
 
     def CalculateMove(self, Board, Symbol):
-        bestScore = 100
+        self.NumberOfMoves = 1
+        bestScore = -1000
         for r in range(1, len(Board)):
             for c in range(1, len(Board)):
                 if(Board[r][c] == '.'):
-                    self.NumberOfMoves += 1
                     Board[r][c] = Symbol
-                    score = self.minimax(Board, True, 'X', r, c)
+                    score = self.minimax(Board, False, 'O')
                     Board[r][c] = '.'
-                    if(score < bestScore):
+                    if(score > bestScore):
                         bestScore = score
                         bestMove = (r, c)
         Board[bestMove[0]][bestMove[1]] = Symbol
     
     
-    def minimax(self, Board, isMax, Symbol, x, y):
-        result = self.CheckWinCondition(Board, (x,y), Symbol)
-        if(result == False and self.NumberOfMoves == (len(Board) - 1) * (len(Board) - 1)): #checks if the game state is a Tie
-            return 0
-        if(result): #checks if the game is in a winning state
-            if(Symbol == 'X'): #returns 1 if X won
-                return -1
-            else: #returns -1 if O won
-                return 1
-        
+    def minimax(self, Board, isMax, Symbol):
+        result = self.CheckWinningState(Board)
+        if(result is not None):
+            return result
         if (isMax):
             bestScore = -100
             for r in range(1, len(Board)):
                 for c in range(1, len(Board)):
                     if(Board[r][c] == '.'):
-                        self.NumberOfMoves += 1
                         Board[r][c] = Symbol
-                        score = self.minimax(Board, False, 'O', r, c)
+                        score = self.minimax(Board, False, 'O')
                         Board[r][c] = '.'
                         bestScore = max(score, bestScore)
+            return bestScore
         else:
             bestScore = 100
             for r in range(1, len(Board)):
                 for c in range(1, len(Board)):
                     if(Board[r][c] == '.'):
-                        self.NumberOfMoves += 1
                         Board[r][c] = Symbol
-                        score = self.minimax(Board, True, 'X', r, c)
+                        score = self.minimax(Board, True, 'X')
                         Board[r][c] = '.'
                         bestScore = min(score, bestScore)
-        return bestScore
+            return bestScore
 
     def MakeMove(self, Board: list, x: int, y: int, Symbol: str, Win_Condition: int):
         """Board: Array of arrays that represents the playing board
@@ -73,17 +67,17 @@ class AI:
         """Board: Array of arrays that represents the playing board
         Coordinates: Tuple that represents last move.
         Symbol: Represent players symbol (X/O)
-        Win_Condition: int representing how many symbols in a straight line it takes to win
         """
-        directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1) ,(-1, 1), (1, -1)] #directions that will be checked for win condition (right, left, up, down, top-right, bottom-left, bottom-right, top-left)
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)] #directions that will be checked for win condition (right, left, up, down, top-right, bottom-left, bottom-right, top-left)
         for i in range(0, 7, 2 ): #4 cycles for every column, row and diagonal.
             count = 0
-            count += self.SearchInADirection(Board, directions[i], Symbol, [Coordinates[0], Coordinates[1]])
-            count += self.SearchInADirection(Board, directions[i + 1], Symbol, [Coordinates[0], Coordinates[1]])
+            count += self.SearchInADirection(Board, directions[i], Symbol, Coordinates[:])
+            count += self.SearchInADirection(Board, directions[i + 1], Symbol, Coordinates[:])
             count -= 1 #1 is substracted because the symbol on starting coordinates is counted twice
             if(count >= self.Win_Condition):
                 return True
         return False
+    
     """Counts how many of the same symbol are in a straight line"""
     def SearchInADirection(self, Board: list, direction: tuple, Symbol: str, current_Coordinates: tuple):
         """Board: Array of arrays that represent the playing board
@@ -104,3 +98,55 @@ class AI:
             current_Coordinates[1] += direction[1] 
             current = Board[current_Coordinates[0]][current_Coordinates[1]] #changes current symbol to the next square
         return count
+    
+    def CheckWinningStateDynamic(self, Board):
+        diag1_sum = 0
+        diag2_sum = 0
+        length = len(Board)
+        isFull = True
+        for r in range(1, len(Board)):
+            row_sum = 0
+            col_sum = 0
+            for c in range(1, len(Board)):
+                #checks rows
+                if(Board[r][c] == 'X'): 
+                    row_sum += 1
+                if(Board[r][c] == 'O'):
+                    row_sum -= 1
+                if(Board[r][c] == '.'):
+                    isFull = False
+                    row_sum = 0 
+
+                #checks columns
+                if(Board[c][r] == 'X'):
+                    col_sum += 1
+                if(Board[c][r] == 'O'):
+                    col_sum -= 1
+                if(Board[c][r] == '.'):
+                    col_sum = 0
+                
+                #checks winning state
+                if(col_sum >= self.Win_Condition or row_sum >= self.Win_Condition):
+                    return 1
+                elif(-col_sum >= self.Win_Condition or -row_sum >= self.Win_Condition):
+                    return -1
+            if(Board[r][r] == 'X'): 
+                diag1_sum += 1
+            if(Board[r][r] == 'O'):
+                diag1_sum -= 1
+            if(Board[r][r]== '.'):
+                diag1_sum = 0
+            if(Board[r][length - r] == 'X'): 
+                diag2_sum += 1
+            if(Board[r][length - r] == 'O'):
+                diag2_sum -= 1
+            if(Board[r][length - r]== '.'):
+                diag2_sum = 0
+            if(diag1_sum >= self.Win_Condition or diag2_sum >= self.Win_Condition):
+                    return 1
+            elif(-diag1_sum >= self.Win_Condition or -diag2_sum >= self.Win_Condition):
+                return -1
+        if(isFull):
+            return 0
+        else:
+            return None

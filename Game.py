@@ -64,12 +64,19 @@ class Game():
         while True:
             self.ResetBoard(Board)
             if playing:
-                End = self.PlayerInput(Board, "X's turn [X Y]: ", 'X', Win_Condition)
+                self.PlayerInput(Board, "X's turn [X Y]: ", 'X', Win_Condition)
                 playing = False #switches the player
             else:
-                End = self.PlayerInput(Board, "O's turn [X Y]: ", 'O', Win_Condition)
+                self.PlayerInput(Board, "O's turn [X Y]: ", 'O', Win_Condition)
                 playing = True #switches the player
-            if End:
+            result = self.CheckWinningState(Board, Win_Condition)
+            if(result is not None):
+                self.ResetBoard(Board)
+                if(result == 1):
+                    print('X won')
+                else:
+                    print('O won')
+                input("Press Enter to return to Menu")
                 return
 
 
@@ -78,16 +85,23 @@ class Game():
         """Board: Array of arrays representing the playing board
         Win_Condition: int representing how many symbols in a straight line it takes to win"""
         ai = AI(Win_Condition)
-        playing = True #boolean representing which player is about to make a move (X/O)
+        playing = False #boolean representing which player is about to make a move (X/O)
         while True:
             self.ResetBoard(Board)
             if playing:
-                End = self.PlayerInput(Board, "Player's turn [X Y]: ", 'X', Win_Condition)
+                self.PlayerInput(Board, "Player's turn [X Y]: ", 'O', Win_Condition)
                 playing = False #switches the player
             else:
-                ai.CalculateMove(Board, 'O')
+                ai.CalculateMove(Board, 'X')
                 playing = True #switches the player
-            if End:
+            result = self.CheckWinningState(Board, Win_Condition)
+            if(result is not None):
+                self.ResetBoard(Board)
+                if(result == 1):
+                    print('X won')
+                else:
+                    print('O won')
+                input("Press Enter to return to Menu")
                 return
 
     """Creates and returns an array of arrays that represents the playing board"""
@@ -122,12 +136,7 @@ class Game():
                 if(coordinates[0] in range(1, len(Board) + 1) and coordinates[1] in range(1, len(Board) + 1)): #checks if the coordinates aren't out of bounds
                     if(Board[coordinates[0]][coordinates[1]] == '.'): #checks if the tile isn't already filled
                         Board[coordinates[0]][coordinates[1]] = Symbol #fills the square
-                        if(self.CheckWinCondition(Board, coordinates, Symbol, Win_Condition)):
-                            self.ResetBoard(Board)
-                            print(Symbol + " won")
-                            input("Press Enter to return to Menu")
-                            return True
-                        return False
+                        return
             self.ResetBoard(Board)
 
 
@@ -140,10 +149,7 @@ class Game():
         """
         
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)] #directions that will be checked for win condition (right, left, up, down, top-right, bottom-left, bottom-right, top-left)
-        
         for i in range(0, 7, 2 ): #4 cycles for every column, row and diagonal.
-            if(Coordinates == [1, 3] and i == 6):
-                print()
             count = 0
             count += self.SearchInADirection(Board, directions[i], Symbol, Coordinates[:])
             count += self.SearchInADirection(Board, directions[i + 1], Symbol, Coordinates[:])
@@ -173,3 +179,52 @@ class Game():
             current_Coordinates[1] += direction[1] 
             current = Board[current_Coordinates[0]][current_Coordinates[1]] #changes current symbol to the next square
         return count
+
+    def CheckWinningState(self, Board, Win_Condition):
+        diag1_sum = 0
+        diag2_sum = 0
+        length = len(Board)
+        for r in range(1, len(Board)):
+            row_sum = 0
+            col_sum = 0
+            for c in range(1, len(Board)):
+                
+                #checks rows
+                if(Board[r][c] == 'X'): 
+                    row_sum += 1
+                if(Board[r][c] == 'O'):
+                    row_sum -= 1
+                if(Board[r][c] == '.'):
+                    row_sum = 0 
+
+                #checks columns
+                if(Board[c][r] == 'X'):
+                    col_sum += 1
+                if(Board[c][r] == 'O'):
+                    col_sum -= 1
+                if(Board[c][r] == '.'):
+                    col_sum = 0
+                
+                #checks winning state
+                if(col_sum >= Win_Condition or row_sum >= Win_Condition):
+                    return 1
+                elif(-col_sum >= Win_Condition or -row_sum >= Win_Condition):
+                    return -1
+            if(Board[r][r] == 'X'): 
+                diag1_sum += 1
+            if(Board[r][r] == 'O'):
+                diag1_sum -= 1
+            if(Board[r][r]== '.'):
+                diag1_sum = 0
+            if(Board[r][length - r] == 'X'): 
+                diag2_sum += 1
+            if(Board[r][length - r] == 'O'):
+                diag2_sum -= 1
+            if(Board[r][length - r]== '.'):
+                diag2_sum = 0
+            if(diag1_sum >= Win_Condition or diag2_sum >= Win_Condition):
+                    return 1
+            elif(-diag1_sum >= Win_Condition or -diag2_sum >= Win_Condition):
+                return -1
+
+        return None
