@@ -1,3 +1,5 @@
+import os
+
 class Board():
     
     
@@ -18,6 +20,13 @@ class Board():
             rowcount += 1 
         return Board
     
+    """Displays board in console"""
+    def ResetBoard(self, Board):
+        clear = lambda: os.system('cls')
+        clear()
+        for r in Board:
+            print("".join(r))
+
     """Checks if a game is a in winning or drawing state"""
     def CheckWinningState(self, Board, Win_Condition) -> int:
         """

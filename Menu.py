@@ -37,6 +37,22 @@ class Menu():
         print("#"+" "*11+"Press E to return to menu"+" "*12+"#")
         print("#"+" "*48+"#")
         print("#"*50)
+    
+    """Displays the Choose Player Menu"""
+    def DrawChoosePlayer(self):
+        print("#"*50)
+        print("#"+" "*48+"#")
+        print("#" + " "*10 + "Who do you want to play as?" + " "*11 + "#")
+        print("#"+" "*48+"#")
+        print("#" + " "*17 + "Press Q for X" + " "*18 +"#")
+        print("#"+" "*48+"#")
+        print("#" + " "*17 + "Press W for O" + " "*18 + "#")
+        print("#"+" "*48+"#")
+        print("#" + " "*15 + "Press E for random" + " "*15 + "#")
+        print("#"+" "*48+"#")
+        print("#"+" "*11+"Press R to return to menu"+" "*12+"#")
+        print("#"+" "*48+"#")
+        print("#"*50)
 
 
     """Clears the console and calls DrawMenu function"""

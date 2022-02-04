@@ -12,16 +12,27 @@ class AI:
         Board: Array of arrays representing the playing board
         Symbol: Represent the player (or AI)
         """
-        bestScore = -1000
+        if(Symbol == 'X'):
+            bestScore = -1000
+        else:
+            bestScore = 1000
         for r in range(1, len(Board)):
             for c in range(1, len(Board)): # tries every position 
                 if(Board[r][c] == '.'):
                     Board[r][c] = Symbol 
-                    score = self.minimax(Board, False, 'O') #starts the minimax with a new position
+                    if Symbol == 'X':
+                        score = self.minimax(Board, False, 'O') #starts the minimax with a new position
+                    else:
+                        score = self.minimax(Board, True, 'X') #starts the minimax with a new position
                     Board[r][c] = '.' #goes back to the original board
-                    if(score > bestScore): #if the score is better for the player, saves the move
-                        bestScore = score
-                        bestMove = (r, c)
+                    if Symbol == 'X':
+                        if(score > bestScore): #if the score is better for the player, saves the move
+                            bestScore = score
+                            bestMove = (r, c)
+                    else:
+                        if(score < bestScore): #if the score is better for the player, saves the move
+                            bestScore = score
+                            bestMove = (r, c)
         Board[bestMove[0]][bestMove[1]] = Symbol #Plays the best move
     
     """The minimax algorithm, recusively calculates scores"""

@@ -1,11 +1,11 @@
 from Menu import Menu
-import os
 import sys
 import re
 from AI import AI
 from Board import Board
-
+import random
 class Game():
+    
     def __init__(self):
         self.Menu = Menu()
         self.Board = Board()
@@ -42,18 +42,30 @@ class Game():
                 self.TwoPlayerGameLoop(Board, Win_Condition)
                 return
             elif(User_Input == 'w' or User_Input == 'W'): #starts a game against AI
-                self.SinglePlayerGameLoop(Board, Win_Condition)
+                self.ChoosePlayerLoop(Board, Win_Condition)
                 return
             elif(User_Input == 'e' or User_Input == 'E'): #returns to menu
                 return
 
 
-    """Displays board in console"""
-    def ResetBoard(self, Board):
-        clear = lambda: os.system('cls')
-        clear()
-        for r in Board:
-            print("".join(r))
+    def ChoosePlayerLoop(self, Board, Win_Condition):
+        while True:
+            self.Menu.DrawChoosePlayer()
+            User_Input = input("Enter what you want to do: ")
+            if(User_Input == 'q' or User_Input == 'Q'): #starts the game as X
+                self.SinglePlayerGameLoop(Board, Win_Condition, 'X')
+                return
+            elif(User_Input == 'w' or User_Input == 'W'): #starts the game as O
+                self.SinglePlayerGameLoop(Board, Win_Condition, 'O')
+                return
+            elif(User_Input == 'e' or User_Input == 'E'): #Randomly picks a symbol
+                Symbol = random.choice(['X', 'O'])
+                self.SinglePlayerGameLoop(Board, Win_Condition, Symbol)
+                return
+            elif(User_Input == 'r' or User_Input == 'R'): #returns to menu
+                return
+
+
 
 
     """Function for taking input for two player game"""
@@ -62,7 +74,7 @@ class Game():
         Win_Condition: int representing how many symbols in a straight line it takes to win"""
         playing = True #boolean representing which player is about to make a move (X/O)
         while True:
-            self.ResetBoard(Board)
+            self.Board.ResetBoard(Board)
             if playing:
                 self.PlayerInput(Board, "X's turn [X Y]: ", 'X')
                 playing = False #switches the player
@@ -71,7 +83,7 @@ class Game():
                 playing = True #switches the player
             result = self.Board.CheckWinningState(Board, Win_Condition)
             if(result is not None):
-                self.ResetBoard(Board)
+                self.Board.ResetBoard(Board)
                 if(result == 1):
                     print('X won')
                 elif(result == -1):
@@ -83,29 +95,44 @@ class Game():
 
 
     """Function for taking input for two player game"""
-    def SinglePlayerGameLoop(self, Board, Win_Condition):
+    def SinglePlayerGameLoop(self, Board, Win_Condition, Symbol):
         """Board: Array of arrays representing the playing board
-        Win_Condition: int representing how many symbols in a straight line it takes to win"""
+        Win_Condition: int representing how many symbols in a straight line it takes to win
+        Symbol: Represent who's starting
+        """
         ai = AI(Win_Condition)
-        playing = False #boolean representing which player is about to make a move (X/O)
+        if(Symbol == 'X'):
+            playing = True #boolean representing which player is about to make a move (X/O)
+        else:
+            playing = False
+            Symbol = 'X'
         while True:
-            self.ResetBoard(Board)
+            self.Board.ResetBoard(Board)
             if playing:
-                self.PlayerInput(Board, "Player's turn [X Y]: ", 'O')
+                self.PlayerInput(Board, "Player's turn [X Y]: ", Symbol)
                 playing = False #switches the player
+                if Symbol == 'X': #switches the symbol
+                    Symbol = 'O'
+                else:
+                    Symbol = 'X'
             else:
-                ai.CalculateMove(Board, 'X')
+                ai.CalculateMove(Board, Symbol)
                 playing = True #switches the player
+                if Symbol == 'X': #switches the symbol
+                    Symbol = 'O'
+                else:
+                    Symbol = 'X'
             result = self.Board.CheckWinningState(Board, Win_Condition)
             if(result is not None):
-                self.ResetBoard(Board)
+                self.Board.ResetBoard(Board)
                 if(result == 1):
                     print('X won')
-                else:
+                elif(result == -1):
                     print('O won')
+                else:
+                    print('Tie')
                 input("Press Enter to return to Menu")
                 return
-
 
 
 
@@ -123,5 +150,5 @@ class Game():
                     if(Board[coordinates[0]][coordinates[1]] == '.'): #checks if the tile isn't already filled
                         Board[coordinates[0]][coordinates[1]] = Symbol #fills the square
                         return
-            self.ResetBoard(Board)
+            self.Board.ResetBoard(Board)
 
