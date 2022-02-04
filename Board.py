@@ -43,8 +43,12 @@ class Board():
             for c in range(1, len(Board)):
                 #checks rows
                 if(Board[r][c] == 'X'): 
+                    if(row_sum < 0):
+                        row_sum = 0
                     row_sum += 1
                 if(Board[r][c] == 'O'):
+                    if(row_sum > 0):
+                        row_sum = 0
                     row_sum -= 1
                 if(Board[r][c] == '.'):
                     isFull = False
@@ -52,8 +56,12 @@ class Board():
 
                 #checks columns
                 if(Board[c][r] == 'X'):
+                    if(col_sum < 0):
+                        col_sum = 0
                     col_sum += 1
                 if(Board[c][r] == 'O'):
+                    if(col_sum > 0):
+                        col_sum = 0
                     col_sum -= 1
                 if(Board[c][r] == '.'):
                     col_sum = 0
@@ -65,14 +73,22 @@ class Board():
                     return -1
             #checks diagonal
             if(Board[r][r] == 'X'): 
+                if(diag1_sum < 0):
+                    diag1_sum = 0
                 diag1_sum += 1
             if(Board[r][r] == 'O'):
+                if(diag1_sum > 0):
+                    diag1_sum = 0
                 diag1_sum -= 1
             if(Board[r][r]== '.'):
                 diag1_sum = 0
             if(Board[r][length - r] == 'X'): 
+                if(diag2_sum < 0):
+                    diag2_sum = 0
                 diag2_sum += 1
             if(Board[r][length - r] == 'O'):
+                if(diag2_sum > 0):
+                    diag2_sum = 0
                 diag2_sum -= 1
             if(Board[r][length - r]== '.'):
                 diag2_sum = 0

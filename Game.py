@@ -25,7 +25,8 @@ class Game():
                 Board = self.Board.CreatePlayingBoard(9)
                 self.StartOfGameLoop(Board, 5)
             elif(User_Input == 'r' or User_Input == 'R'): #displays the controls
-                print("Showing off controls")
+                self.Menu.DrawControls()
+                input()
             elif(User_Input == 't' or User_Input == 'T'): #exits the program
                 sys.exit()
 

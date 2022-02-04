@@ -55,6 +55,18 @@ class Menu():
         print("#"*50)
 
 
+    def DrawControls(self):
+        clear = lambda: os.system('cls')
+        clear()
+        print("Game for 2 players: The players are taking turns in writing coordinates in the console.")
+        print("                    The coordinates are written in the following format [X Y] (without the parentheses)")
+        print("Game for 1 player:  The player is taking turns with a computer.")
+        print()
+        print("The goal is to make a straight line of 3/4/5 (based on board size) of your symbol.")
+        print("The line can be vertical, horizontal or on a diagonal.")
+        print("Press Enter to return back to Menu")
+
+
     """Clears the console and calls DrawMenu function"""
     def ResetMenu(self):
         clear = lambda: os.system('cls')
