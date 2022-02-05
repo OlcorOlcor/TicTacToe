@@ -32,8 +32,9 @@ class Game():
 
 
     """Starts either a game for 2 players or a game against the AI"""
-    def StartOfGameLoop(self, Board, Win_Condition):
-        """Board: Array of arrays representing the playing board
+    def StartOfGameLoop(self, Board, Win_Condition: int):
+        """
+        Board: Array of arrays representing the playing board
         Win_Condition: int representing how many symbols in a straight line it takes to win
         """
         while True:
@@ -48,8 +49,12 @@ class Game():
             elif(User_Input == 'e' or User_Input == 'E'): #returns to menu
                 return
 
-
-    def ChoosePlayerLoop(self, Board, Win_Condition):
+    """Starts game as either X or O"""
+    def ChoosePlayerLoop(self, Board, Win_Condition: int):
+        """
+        Board: Array of arrays representing the playing board
+        Win_Condition: int representing how many symbols in a straight line it takes to win
+        """
         while True:
             self.Menu.DrawChoosePlayer()
             User_Input = input("Enter what you want to do: ")
@@ -71,8 +76,10 @@ class Game():
 
     """Function for taking input for two player game"""
     def TwoPlayerGameLoop(self, Board, Win_Condition):
-        """Board: Array of arrays representing the playing board
-        Win_Condition: int representing how many symbols in a straight line it takes to win"""
+        """
+        Board: Array of arrays representing the playing board
+        Win_Condition: int representing how many symbols in a straight line it takes to win
+        """
         playing = True #boolean representing which player is about to make a move (X/O)
         while True:
             self.Board.ResetBoard(Board)
@@ -97,7 +104,8 @@ class Game():
 
     """Function for taking input for two player game"""
     def SinglePlayerGameLoop(self, Board, Win_Condition, Symbol):
-        """Board: Array of arrays representing the playing board
+        """
+        Board: Array of arrays representing the playing board
         Win_Condition: int representing how many symbols in a straight line it takes to win
         Symbol: Represent who's starting
         """
@@ -139,7 +147,8 @@ class Game():
 
     """Takes input from the user and checks whether or not its a valid move"""
     def PlayerInput(self, Board: list, Message: str, Symbol: str):
-        """Board: Array of arrays that represents the playing board
+        """
+        Board: Array of arrays that represents the playing board
         Message: Message that'll be written in input
         Symbol: Symbol that'll be added to the Board
         """

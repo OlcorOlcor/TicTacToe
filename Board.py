@@ -100,3 +100,64 @@ class Board():
             return 0
         else:
             return None
+
+    
+    """Checks if last move made was a winning move"""
+    def CheckIfMoveWon(self, Board, x: int, y: int, Win_Condition: int) -> int:
+        """
+        Board: Array of arrays that represents the playing board
+        x: integer representing x coordinate
+        y: integer representing y coordinate
+        Win_Condition: int representing how many symbols in a straight line it takes to win
+        """
+        Symbol = Board[x][y]
+        #Check row
+        sum = 0
+        for i in range(1, len(Board)):
+            if(Board[x][i] != Symbol):
+                sum = 0
+            else:
+                sum += 1
+            if(sum >= Win_Condition):
+                return 1
+        #check column
+        sum = 0
+        for i in range(1, len(Board)):
+            if(Board[i][y] != Symbol):
+                sum = 0
+            else:
+                sum += 1
+            if(sum >= Win_Condition):
+                return 1
+        
+        #check diagonal
+        sum = 0
+        current_x = 1
+        current_y = y + x - 1
+        while True:
+            if(current_x >= len(Board) or current_y == 0 or current_y >= len(Board)):
+                break
+            if(Board[current_x][current_y] != Symbol):
+                sum = 0
+            else:
+                sum += 1
+            if(sum >= Win_Condition):
+                return 1
+            current_x += 1
+            current_y -= 1
+        sum = 0
+        current_x = x - y + 1
+        current_y = 1
+        #check other diagonal
+        while True:
+            if(current_x >= len(Board) or current_y >= len(Board)):
+                break
+            if(Board[current_x][current_y] != Symbol):
+                sum = 0
+            else: 
+                sum += 1
+            if(sum >= Win_Condition):
+                return 1
+            current_x += 1
+            current_y += 1
+        return 0
