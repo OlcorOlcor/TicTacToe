@@ -64,6 +64,9 @@ class Menu():
         print()
         print("The goal is to make a straight line of 3/4/5 (based on board size) of your symbol.")
         print("The line can be vertical, horizontal or on a diagonal.")
+        print()
+        print("Writing 'quit' in any of the gamemodes will end the game and return to the main menu")
+        print()
         print("Press Enter to return back to Menu")
 
 

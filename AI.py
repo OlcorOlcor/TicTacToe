@@ -5,7 +5,7 @@ class AI:
     def __init__(self, Win_Condition):
         self.Win_Condition = Win_Condition
         self.Board = Board()
-        self.MaxDepth = 9
+        self.MaxDepth = 3
 
     """Starts the minimax algorithm, makes the best move for the given position"""
     def CalculateMove(self, Board, Symbol):

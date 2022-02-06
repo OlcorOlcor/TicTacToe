@@ -84,10 +84,14 @@ class Game():
         while True:
             self.Board.ResetBoard(Board)
             if playing:
-                self.PlayerInput(Board, "X's turn [X Y]: ", 'X')
+                end = self.PlayerInput(Board, "X's turn [X Y]: ", 'X')
+                if(end):
+                    return
                 playing = False #switches the player
             else:
-                self.PlayerInput(Board, "O's turn [X Y]: ", 'O')
+                end = self.PlayerInput(Board, "O's turn [X Y]: ", 'O')
+                if(end):
+                    return
                 playing = True #switches the player
             result = self.Board.CheckWinningState(Board, Win_Condition)
             if(result is not None):
@@ -118,7 +122,9 @@ class Game():
         while True:
             self.Board.ResetBoard(Board)
             if playing:
-                self.PlayerInput(Board, "Player's turn [X Y]: ", Symbol)
+                end = self.PlayerInput(Board, "Player's turn [X Y]: ", Symbol)
+                if(end):
+                    return
                 playing = False #switches the player
                 if Symbol == 'X': #switches the symbol
                     Symbol = 'O'
@@ -154,11 +160,13 @@ class Game():
         """
         while True:
             inp = input(Message) #takes input from the user
+            if(inp == "quit"):
+                return True
             if(re.match("(\d|10) (\d|10)", inp)): #checks if its in a correct format
                 coordinates = [int(i) for i in inp.split()] #splits the input into coordinates
                 if(coordinates[0] in range(1, len(Board) + 1) and coordinates[1] in range(1, len(Board) + 1)): #checks if the coordinates aren't out of bounds
                     if(Board[coordinates[0]][coordinates[1]] == '.'): #checks if the tile isn't already filled
                         Board[coordinates[0]][coordinates[1]] = Symbol #fills the square
-                        return
+                        return False    
             self.Board.ResetBoard(Board)
 
